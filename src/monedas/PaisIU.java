@@ -8,6 +8,8 @@ import monedasrepositorio.*;
 
 public class PaisIU {
 
+    //Colecciones de datos necesarias
+    public static int indice = -1;
     private static List<Pais> paises;
     private static List<Moneda> monedas;
     //Objetos del formulario
@@ -44,7 +46,9 @@ public class PaisIU {
         }
     }
 
-    public static void alistarFormulario(JTabbedPane tp, JToolBar tb, JComboBox cmbMoneda) throws Exception {
+    public static void alistarFormulario(JTabbedPane tp, JToolBar tb,
+            JComboBox cmbMoneda,
+            JComboBox cmbBuscar) throws Exception {
         //pasar los paneles
         pnlLista = (JPanel) tp.getComponent(0);
         pnlEdicion = (JPanel) tp.getComponent(1);
@@ -58,12 +62,18 @@ public class PaisIU {
             }
         }
 
+        //Listar opciones de busqueda
+        cmbBuscar.removeAllItems();
+        cmbBuscar.addItem("Nombre");
+        cmbBuscar.addItem("Codigo Alfa");
+        cmbBuscar.addItem("Moneda");
+
         //Listar las monedas
         try {
             monedas = Moneda.obtener();
-            
+
             cmbMoneda.removeAllItems();
-            for(Moneda m:monedas){
+            for (Moneda m : monedas) {
                 cmbMoneda.addItem(m.getMoneda());
             }
         } catch (Exception ex) {
@@ -100,10 +110,51 @@ public class PaisIU {
         }
         actualizarDespliegue(true);
         UtilIU.mostrarTabla(tbl, pasarMatriz(), encabezados);
+        paneles.setTitleAt(0, "Lista de Países");
     }
 
-    public static void iniciarEdicion() {
+    public static void buscar(JTable tbl, int tipo, String dato) throws Exception {
+        try {
+            paises = Pais.buscar(tipo, dato);
+        } catch (Exception ex) {
+            throw new Exception("Error al buscar Países:\n [** " + ex + " **]");
+        }
+        UtilIU.mostrarTabla(tbl, pasarMatriz(), encabezados);
+    }
+
+    //Método para limpiar los objetos de la edicion de una Pais
+    public static void limpiar(JTextField txtPais,
+            JTextField txtCodigoAlfa2,
+            JTextField txtCodigoAlfa3,
+            JComboBox cmbMoneda
+    ) {
+        //Dejar los controles vacíos
+        txtPais.setText("");
+        txtCodigoAlfa2.setText("");
+        txtCodigoAlfa3.setText("");
+        cmbMoneda.setSelectedIndex(-1);
+        paneles.setTitleAt(0, "Editando datos de un nuevo País");
+    }//limpiar
+
+    public static void iniciarEdicion(JTextField txtPais,
+            JTextField txtCodigoAlfa2,
+            JTextField txtCodigoAlfa3,
+            JComboBox cmbMoneda) throws Exception {
         actualizarDespliegue(false);
+        if (indice >= 0) {
+            Pais p = paises.get(indice);
+            txtPais.setText(p.getPais());
+            txtCodigoAlfa2.setText(p.getCodigoAlfa2());
+            txtCodigoAlfa3.setText(p.getCodigoAlfa3());
+            cmbMoneda.setSelectedIndex(p.getMoneda() != null ? Moneda.obtenerIndice(monedas, p.getMoneda().getId()) : -1);
+            paneles.setTitleAt(0, "Editando datos del país [" + p.getPais() + "]");
+        } else {
+            limpiar(txtPais,
+                    txtCodigoAlfa2,
+                    txtCodigoAlfa3,
+                    cmbMoneda);
+        }
+
     }
 
 }

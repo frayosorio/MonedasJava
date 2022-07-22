@@ -3,9 +3,9 @@ package monedas;
 public class FrmPais extends javax.swing.JFrame {
 
     public FrmPais() {
-        initComponents(); 
+        initComponents();
         try {
-            PaisIU.alistarFormulario(tp, tb, cmbMoneda);
+            PaisIU.alistarFormulario(tp, tb, cmbMoneda, cmbBuscar);
             PaisIU.listar(tbl, true);
         } catch (Exception ex) {
             UtilIU.error("Error Iniciando Formulario: " + ex.getMessage());
@@ -33,7 +33,9 @@ public class FrmPais extends javax.swing.JFrame {
         tp = new javax.swing.JTabbedPane();
         pnlLista = new javax.swing.JPanel();
         jPanel2 = new javax.swing.JPanel();
-        jButton1 = new javax.swing.JButton();
+        btnBuscar = new javax.swing.JButton();
+        cmbBuscar = new javax.swing.JComboBox();
+        txtDato = new javax.swing.JTextField();
         jScrollPane1 = new javax.swing.JScrollPane();
         tbl = new javax.swing.JTable();
         pnlEdicion = new javax.swing.JPanel();
@@ -67,6 +69,11 @@ public class FrmPais extends javax.swing.JFrame {
         btnModificar.setFocusable(false);
         btnModificar.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         btnModificar.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        btnModificar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnModificarActionPerformed(evt);
+            }
+        });
         tb.add(btnModificar);
 
         btnEliminar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/iconos/Eliminar.png"))); // NOI18N
@@ -110,23 +117,41 @@ public class FrmPais extends javax.swing.JFrame {
         });
         tb.add(btnCancelar);
 
-        jButton1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/iconos/Buscar.png"))); // NOI18N
-        jButton1.setToolTipText("Buscar País");
+        btnBuscar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/iconos/Buscar.png"))); // NOI18N
+        btnBuscar.setToolTipText("Buscar País");
+        btnBuscar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnBuscarActionPerformed(evt);
+            }
+        });
+
+        cmbBuscar.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jButton1)
-                .addGap(189, 189, 189))
+                .addGap(20, 20, 20)
+                .addComponent(cmbBuscar, javax.swing.GroupLayout.PREFERRED_SIZE, 135, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(txtDato, javax.swing.GroupLayout.PREFERRED_SIZE, 131, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(btnBuscar)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jButton1)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(btnBuscar))
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addGap(27, 27, 27)
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(txtDato)
+                            .addComponent(cmbBuscar))))
                 .addContainerGap(26, Short.MAX_VALUE))
         );
 
@@ -233,7 +258,15 @@ public class FrmPais extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnAgregarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAgregarActionPerformed
-        PaisIU.iniciarEdicion();
+        PaisIU.indice = -1;
+        try {
+            PaisIU.iniciarEdicion(txtNombre,
+                    txtCodigoAlfa2,
+                    txtCodigoAlfa3,
+                    cmbMoneda);
+        } catch (Exception ex) {
+            UtilIU.error("Error agregando País: " + ex.getMessage());
+        }
     }//GEN-LAST:event_btnAgregarActionPerformed
 
     private void btnCancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelarActionPerformed
@@ -243,6 +276,34 @@ public class FrmPais extends javax.swing.JFrame {
             UtilIU.error("Error listando Paises: " + ex.getMessage());
         }      // TODO add your handling code here:
     }//GEN-LAST:event_btnCancelarActionPerformed
+
+    private void btnBuscarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuscarActionPerformed
+        try {
+            if (cmbBuscar.getSelectedIndex() >= 0 && !txtDato.getText().trim().equals("")) {
+                PaisIU.buscar(tbl, cmbBuscar.getSelectedIndex(), txtDato.getText());
+            } else {
+                PaisIU.listar(tbl, true);
+            }
+        } catch (Exception ex) {
+            UtilIU.error("Error listando Paises: " + ex.getMessage());
+        }
+    }//GEN-LAST:event_btnBuscarActionPerformed
+
+    private void btnModificarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnModificarActionPerformed
+        if (tbl.getSelectedRow() >= 0) {
+            PaisIU.indice = tbl.getSelectedRow();
+            try {
+                PaisIU.iniciarEdicion(txtNombre,
+                        txtCodigoAlfa2,
+                        txtCodigoAlfa3,
+                        cmbMoneda);
+            } catch (Exception ex) {
+                UtilIU.error("Error modificando País: " + ex.getMessage());
+            }
+        } else {
+            UtilIU.error("Debe seleccionar un País");
+        }
+    }//GEN-LAST:event_btnModificarActionPerformed
 
     /**
      * @param args the command line arguments
@@ -281,14 +342,15 @@ public class FrmPais extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAgregar;
+    private javax.swing.JButton btnBuscar;
     private javax.swing.JButton btnCancelar;
     private javax.swing.JButton btnEliminar;
     private javax.swing.JButton btnImprimir;
     private javax.swing.JButton btnMapa;
     private javax.swing.JButton btnMapa1;
     private javax.swing.JButton btnModificar;
+    private javax.swing.JComboBox cmbBuscar;
     private javax.swing.JComboBox cmbMoneda;
-    private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
@@ -303,6 +365,7 @@ public class FrmPais extends javax.swing.JFrame {
     private javax.swing.JTabbedPane tp;
     private javax.swing.JTextField txtCodigoAlfa2;
     private javax.swing.JTextField txtCodigoAlfa3;
+    private javax.swing.JTextField txtDato;
     private javax.swing.JTextField txtNombre;
     // End of variables declaration//GEN-END:variables
 }
