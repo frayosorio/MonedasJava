@@ -155,6 +155,45 @@ public class PaisIU {
                     cmbMoneda);
         }
 
+    }//iniciarEdicion
+
+    public static boolean guardar(JTextField txtPais,
+            JTextField txtCodigoAlfa2,
+            JTextField txtCodigoAlfa3,
+            JComboBox cmbMoneda) throws Exception {
+
+        Pais p = new Pais(indice >= 0 ? paises.get(indice).getId() : -1,
+                txtPais.getText(),
+                txtCodigoAlfa2.getText(),
+                txtCodigoAlfa3.getText(),
+                cmbMoneda.getSelectedIndex() >= 0 ? monedas.get(cmbMoneda.getSelectedIndex()).getId() : -1
+        );
+        try {
+            if (Pais.guardar(p)) {
+                if (indice >= 0) {
+                    paises.set(indice, p);
+                } else {
+                    paises.add(p);
+                }
+                return true;
+            }
+        } catch (Exception ex) {
+            throw new Exception("Error al actualizar el País:\n [** " + ex + " **]");
+        }
+        return false;
+    }//guardar
+
+    //Método para Eliminar una Pais
+    public static boolean eliminar() throws Exception {
+        try {
+            if (Pais.eliminar(paises.get(indice))) {
+                paises.remove(indice);
+                return true;
+            }
+        } catch (Exception ex) {
+            throw new Exception("Error al eliminar el País:\n [** " + ex + " **]");
+        }
+        return false;
     }
 
 }

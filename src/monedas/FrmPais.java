@@ -28,7 +28,7 @@ public class FrmPais extends javax.swing.JFrame {
         btnImprimir = new javax.swing.JButton();
         btnMapa = new javax.swing.JButton();
         jSeparator1 = new javax.swing.JToolBar.Separator();
-        btnMapa1 = new javax.swing.JButton();
+        btnAceptar = new javax.swing.JButton();
         btnCancelar = new javax.swing.JButton();
         tp = new javax.swing.JTabbedPane();
         pnlLista = new javax.swing.JPanel();
@@ -81,6 +81,11 @@ public class FrmPais extends javax.swing.JFrame {
         btnEliminar.setFocusable(false);
         btnEliminar.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         btnEliminar.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        btnEliminar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnEliminarActionPerformed(evt);
+            }
+        });
         tb.add(btnEliminar);
 
         btnImprimir.setIcon(new javax.swing.ImageIcon(getClass().getResource("/iconos/Imprimir.png"))); // NOI18N
@@ -98,12 +103,17 @@ public class FrmPais extends javax.swing.JFrame {
         tb.add(btnMapa);
         tb.add(jSeparator1);
 
-        btnMapa1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/iconos/Aceptar.png"))); // NOI18N
-        btnMapa1.setToolTipText("Aceptar Cambios");
-        btnMapa1.setFocusable(false);
-        btnMapa1.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        btnMapa1.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        tb.add(btnMapa1);
+        btnAceptar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/iconos/Aceptar.png"))); // NOI18N
+        btnAceptar.setToolTipText("Aceptar Cambios");
+        btnAceptar.setFocusable(false);
+        btnAceptar.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        btnAceptar.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        btnAceptar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnAceptarActionPerformed(evt);
+            }
+        });
+        tb.add(btnAceptar);
 
         btnCancelar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/iconos/Cancelar.png"))); // NOI18N
         btnCancelar.setToolTipText("Cancelar Cambios");
@@ -305,6 +315,36 @@ public class FrmPais extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_btnModificarActionPerformed
 
+    private void btnAceptarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAceptarActionPerformed
+        try {
+            if (PaisIU.guardar(txtNombre, txtCodigoAlfa2, txtCodigoAlfa3, cmbMoneda)) {
+                PaisIU.listar(tbl, false);
+                UtilIU.mensaje("Guardando información del país", "Operación realizada con éxito");
+            }
+        } catch (Exception ex) {
+            UtilIU.error("Error actualizando País: " + ex.getMessage());
+        }
+    }//GEN-LAST:event_btnAceptarActionPerformed
+
+    private void btnEliminarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEliminarActionPerformed
+        if (tbl.getSelectedRow() >= 0) {
+            if (UtilIU.decidir("Eliminando País", "Está seguro de la operación?")) {
+                PaisIU.indice = tbl.getSelectedRow();
+                try {
+                    if (PaisIU.eliminar()) {
+                        PaisIU.listar(tbl, false);
+                        UtilIU.mensaje("Eliminando información del país", "Operación realizada con éxito");
+                        PaisIU.indice = -1;
+                    }
+                } catch (Exception ex) {
+                    UtilIU.error("Error eliminando País: " + ex.getMessage());
+                }
+            }
+        } else {
+            UtilIU.error("Debe seleccionar un País");
+        }
+    }//GEN-LAST:event_btnEliminarActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -341,13 +381,13 @@ public class FrmPais extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnAceptar;
     private javax.swing.JButton btnAgregar;
     private javax.swing.JButton btnBuscar;
     private javax.swing.JButton btnCancelar;
     private javax.swing.JButton btnEliminar;
     private javax.swing.JButton btnImprimir;
     private javax.swing.JButton btnMapa;
-    private javax.swing.JButton btnMapa1;
     private javax.swing.JButton btnModificar;
     private javax.swing.JComboBox cmbBuscar;
     private javax.swing.JComboBox cmbMoneda;
