@@ -1,7 +1,9 @@
 package monedas;
 
+import com.itextpdf.text.*;
+import com.itextpdf.text.pdf.PdfPTable;
 import java.awt.Component;
-import java.util.ArrayList;
+import java.util.*;
 import java.util.List;
 import javax.swing.*;
 import monedasrepositorio.*;
@@ -195,5 +197,45 @@ public class PaisIU {
         }
         return false;
     }
+
+    public static void imprimir() throws Exception {
+        String nombreArchivo = System.getProperty("user.dir")
+                + "/src/Listado de Paises.pdf";
+
+        Document dPDF = DocumentoPDF.iniciar(nombreArchivo,
+                "Curso Mintic",
+                "Listado de Paises",
+                new float[]{20, 20, 20, 20});
+
+        //Agregar el titulo de encabezado
+        Paragraph p = DocumentoPDF.crearParrafo("Listado de Paises\n\n\n", Alineacion.CENTRADO, DocumentoPDF.F12N);
+        dPDF.add(p);
+
+        String[][] datos = pasarMatriz();
+        int[] anchos = new int[]{1, 3, 1, 1, 2};
+        Alineacion[] alineaciones = new Alineacion[5];
+        for (int i = 0; i < alineaciones.length; i++) {
+            alineaciones[i] = Alineacion.CENTRADO;
+        }
+        PdfPTable t = DocumentoPDF.obtenerTabla(datos, encabezados, anchos, alineaciones, true);
+        dPDF.add(t);
+
+        dPDF.close();
+
+        UtilIU.abrirArchivoEnPrograma(nombreArchivo);
+    }//imprimir
+
+    public static void mostrarMapa() throws Exception {
+        if (indice >= 0) {
+            String titulo = "Mapa de " + paises.get(indice).getPais();
+            try {
+                byte[] bMapa = paises.get(indice).getMapa();
+
+                UtilIU.mostrarImagenVentana(bMapa, titulo);
+            } catch (Exception ex) {
+                throw new Exception("Error al actualizar el País:\n [** " + ex + " **]");
+            }
+        }
+    }//mostrarMapa
 
 }

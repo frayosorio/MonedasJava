@@ -1,8 +1,11 @@
 package monedas;
 
 import java.awt.Desktop;
+import java.awt.image.*;
 import java.io.*;
+import java.net.URL;
 import java.util.*;
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.table.*;
 
@@ -75,27 +78,87 @@ public class UtilIU {
         }
     }//HabilitarBotones
 
-//    public static void HabilitarBotones(ToolStripButton[] botones, Boolean habilitado, Boolean agregando, String[] nombres)
-//    {
-//        if (botones != null)
-//        {
-//            foreach (ToolStripButton btn in botones)
-//            {
-//                Boolean enLista = false;
-//                foreach (String nombre in nombres)
-//                {
-//                    if (btn.Name == nombre)
-//                        enLista = true;
-//                }
-//                if (enLista)
-//                {
-//                    btn.Enabled = habilitado;
-//                }
-//                else
-//                {
-//                    btn.Enabled = agregando ? false : !habilitado;
-//                }
-//            }
-//        }
-//    }//HabilitarBotones
+    public static void mostrarImagenVentana(byte[] bImagen, String titulo) {
+        //Instancia una nueva ventana
+        JFrame frmMapa = new JFrame();
+        frmMapa.setTitle(titulo);
+        frmMapa.setSize(600, 400);
+        frmMapa.setVisible(true);
+        //frmMapa.setClosable(true);
+        frmMapa.setResizable(true);
+
+        if (bImagen != null) {
+            try {
+                //Obtener la imagen a partir de los bytes
+                InputStream is = new ByteArrayInputStream(bImagen);
+                BufferedImage img = ImageIO.read(is);
+
+                //Cargar la imagen en un objeto JLABEL
+                ImageIcon icon = new ImageIcon(img);
+                JLabel lbl = new JLabel();
+                lbl.setIcon(icon);
+                //Definir un panel de desplazamiento
+                JScrollPane jsp = new JScrollPane(lbl);
+                //Ubicarlo la ventana
+                jsp.setBounds(0, 0, frmMapa.getWidth(), frmMapa.getHeight());
+                //Agregarlo a la ventana
+                frmMapa.getContentPane().add(jsp);
+            } catch (Exception ex) {
+                System.out.println(ex);
+            }
+        }
+    }//mostrarImagenVentana
+
+    public static Properties abrirConfiguracion() {
+        String ruta = System.getProperty("user.dir") + "/src/configuracion/app.config";
+        try {
+            FileInputStream fis = new FileInputStream(ruta);
+            Properties p = new Properties();
+            p.load(fis);
+            return p;
+        } catch (Exception ex) {
+
+        }
+        return null;
+    }//abrirConfiguracion
+    
+        public static byte[] obtenerImagen(String nombreArchivo) throws Exception {
+        try {
+            //Obtener la imagen desde archivo
+            URL url = new URL(nombreArchivo);
+            BufferedImage bi = ImageIO.read(url);
+            //Convertirla a bytes
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            ImageIO.write(bi, "png", baos);
+            byte[] b = baos.toByteArray();
+            return b;
+        } catch (Exception ex) {
+            throw new Exception("Error al Obtener Imagen:\n" + ex);
+        }
+    }//obtenerImagen
+
+    public static void mostrarImagen(byte[] b, JPanel pnl) {
+        if (b != null) {
+            try {
+                //Obtener la imagen a partir de los bytes
+                InputStream is = new ByteArrayInputStream(b);
+                BufferedImage img = ImageIO.read(is);
+
+                //Cargar la imagen en un objeto JLABEL
+                ImageIcon icon = new ImageIcon(img);
+                JLabel lbl = new JLabel();
+                lbl.setIcon(icon);
+                //Definir un panel de desplazamiento
+                JScrollPane jsp = new JScrollPane(lbl);
+                //Ubicarlo en el panel
+                jsp.setBounds(0, 0, pnl.getWidth(), pnl.getHeight());
+                //Agregarlo a la ventana
+                pnl.add(jsp);
+
+            } catch (Exception ex) {
+
+            }
+        }
+    }//mostrarImagen
+
 }

@@ -93,6 +93,11 @@ public class FrmPais extends javax.swing.JFrame {
         btnImprimir.setFocusable(false);
         btnImprimir.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         btnImprimir.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        btnImprimir.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnImprimirActionPerformed(evt);
+            }
+        });
         tb.add(btnImprimir);
 
         btnMapa.setIcon(new javax.swing.ImageIcon(getClass().getResource("/iconos/Mapa.png"))); // NOI18N
@@ -100,6 +105,11 @@ public class FrmPais extends javax.swing.JFrame {
         btnMapa.setFocusable(false);
         btnMapa.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         btnMapa.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        btnMapa.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnMapaActionPerformed(evt);
+            }
+        });
         tb.add(btnMapa);
         tb.add(jSeparator1);
 
@@ -344,6 +354,27 @@ public class FrmPais extends javax.swing.JFrame {
             UtilIU.error("Debe seleccionar un País");
         }
     }//GEN-LAST:event_btnEliminarActionPerformed
+
+    private void btnImprimirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnImprimirActionPerformed
+        try {
+            PaisIU.imprimir();
+        } catch (Exception ex) {
+            UtilIU.error("Error imprimiendo listado: " + ex.getMessage());
+        }
+    }//GEN-LAST:event_btnImprimirActionPerformed
+
+    private void btnMapaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMapaActionPerformed
+        if (tbl.getSelectedRow() >= 0) {
+            PaisIU.indice = tbl.getSelectedRow();
+            try {
+                PaisIU.mostrarMapa();
+            } catch (Exception ex) {
+                UtilIU.error("Error mostrando mapa: " + ex.getMessage());
+            }
+        } else {
+            UtilIU.error("Debe seleccionar un País");
+        }
+    }//GEN-LAST:event_btnMapaActionPerformed
 
     /**
      * @param args the command line arguments
